@@ -27,6 +27,7 @@ public class MainView extends VerticalLayout {
     private final WebClient webClient;
 
     private final TextArea input = new TextArea("Text/Question");
+    private final TextArea translateInput = new TextArea("Text to translate");
     private final TextArea answer = new TextArea("Answer");
 
     private final ComboBox<String> target = new ComboBox<>("Target language");
@@ -49,7 +50,10 @@ public class MainView extends VerticalLayout {
         setSpacing(true);
 
         input.setWidthFull();
-        input.setPlaceholder("Type a question or a text for translation for Llama 3.1");
+        input.setPlaceholder("Type a question or a text for translation for Llama");
+
+        translateInput.setWidthFull();
+        translateInput.setPlaceholder("Type a text for translation for Llama");
 
         answer.setWidthFull();
         answer.setReadOnly(true);
@@ -67,7 +71,7 @@ public class MainView extends VerticalLayout {
                 onAsk(input.getValue())));
 
         translate.addClickListener(_ -> startStream(
-                onTranslate(input.getValue(), target.getValue())));
+                onTranslate(translateInput.getValue(), target.getValue())));
 
         HorizontalLayout actions = new HorizontalLayout(ask, translate);
         actions.setWidthFull();
@@ -75,9 +79,12 @@ public class MainView extends VerticalLayout {
         HorizontalLayout languages = new HorizontalLayout(target);
         languages.setWidthFull();
 
-        add(input, languages, actions, answer);
+        add(input, translateInput, languages, actions, answer);
 
     }
+
+
+
 
     private Flux<String> onTranslate(String rawText, String languageTo) {
         String txt = trimOrNull(rawText);
@@ -93,13 +100,10 @@ public class MainView extends VerticalLayout {
                 .post()
                 .uri("/translate/" + targetLanguage)
                 .contentType(MediaType.TEXT_PLAIN)
-                .accept(MediaType.APPLICATION_NDJSON)
                 .bodyValue(txt)
                 .retrieve()
-                .bodyToFlux(new ParameterizedTypeReference<Map<String, String>>() {})
-                .map(m -> m.getOrDefault("delta", ""));
+                .bodyToFlux(String.class);
     }
-
 
     private Flux<String> onAsk(String message) {
         String txt = trimOrNull(message);

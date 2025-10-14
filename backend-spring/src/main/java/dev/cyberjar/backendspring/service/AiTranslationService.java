@@ -10,11 +10,12 @@ public class AiTranslationService {
     private final ChatClient chatClient;
 
     private final String TRANSLATION_PROMPT = """
-        You are a professional translator.
-        Translate the user's message into %s.
-        - Preserve meaning, tone, names, and basic formatting.
-        - Return ONLY the translated text (no preface, no quotes).
-        """;
+            You are a professional translator.
+            Task: translate the user's text into %s.
+            Rules:
+            - Output ONLY the translation, no preface, no quotes, no language tags.
+            - Do NOT answer the content; always translate it as-is.
+            """;
 
 
     public AiTranslationService(ChatClient chatClient) {
@@ -32,5 +33,4 @@ public class AiTranslationService {
                 .stream()
                 .content();
     }
-
 }

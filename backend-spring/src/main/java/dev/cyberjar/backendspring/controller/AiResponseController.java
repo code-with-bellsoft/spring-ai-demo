@@ -33,16 +33,13 @@ public class AiResponseController {
                 .map(delta -> Map.of("delta", delta)); //one JSON per line
     }
 
-    @PostMapping(
-            value = "/translate/{targetLanguage}",
+    @PostMapping(value="/translate/{targetLanguage}",
             consumes = MediaType.TEXT_PLAIN_VALUE,
-            produces = MediaType.APPLICATION_NDJSON_VALUE
+            produces = MediaType.TEXT_EVENT_STREAM_VALUE
     )
-    public Flux<Map<String, String>> translate(@PathVariable String targetLanguage,
-                                  @RequestBody String text) {
-
-        return aiTranslationService.translate(targetLanguage, text)
-                .map(delta -> Map.of("delta", delta));
+    public Flux<String> translate(@PathVariable String targetLanguage,
+                                                   @RequestBody String text) {
+        return aiTranslationService.translate(targetLanguage, text);
     }
 
 }
