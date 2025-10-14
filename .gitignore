@@ -31,3 +31,8 @@ build/
 
 ### VS Code ###
 .vscode/
+
+/.idea
+/db/data
+/ollama/data
+/frontend/src/main/frontend/generated
