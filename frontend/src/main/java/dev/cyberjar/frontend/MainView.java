@@ -39,7 +39,6 @@ public class MainView extends VerticalLayout {
     public MainView(@Value("${backend.url}") String backendUrl, WebClient.Builder builder) {
         this.backendUrl = backendUrl;
         this.webClient = builder.baseUrl(backendUrl).build();
-        ;
         createViewElements();
     }
 

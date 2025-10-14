@@ -13,8 +13,11 @@ public class CurrencyConverter {
 
 
     @Tool(description = """
-            Convert money between USD and EUR using a fixed demo rate.
+            If user asks for currency conversion, convert money between USD and EUR using a fixed demo rate.
             Arguments: amount (number), from ('USD'|'EUR'), to ('USD'|'EUR').
+                                - After the tool response, reply with one line like: "<amount> <FROM> = <converted> <TO>".
+                                - Supported currencies: USD and EUR only.
+                                - If currencies are unsupported or missing, ask a concise clarification.
             """)
     public BigDecimal convert(BigDecimal amount, String from, String to) {
         if (amount == null || amount.signum() < 0) {

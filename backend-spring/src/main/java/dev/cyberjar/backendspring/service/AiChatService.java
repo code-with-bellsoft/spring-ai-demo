@@ -13,9 +13,6 @@ public class AiChatService {
     private final String CHAT_PROMPT = """
                         Be concise. Answer in <=3 sentences unless asked otherwise.
                         If the user asks to convert money, extract amount/from/to and call the tool 'convertCurrency'.
-                                - After the tool response, reply with one line like: "<amount> <FROM> = <converted> <TO>".
-                                - Supported currencies: USD and EUR only.
-                                - If currencies are unsupported or missing, ask a concise clarification.
             """;
 
     public AiChatService(ChatClient chatClient) {
