@@ -10,11 +10,13 @@ import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.TextArea;
 import com.vaadin.flow.router.Route;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.MediaType;
-import org.springframework.web.client.RestClient;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.Disposable;
 import reactor.core.publisher.Flux;
+
+import java.util.Map;
 
 @Route("")
 public class MainView extends VerticalLayout {
@@ -39,13 +41,6 @@ public class MainView extends VerticalLayout {
         this.webClient = builder.baseUrl(backendUrl).build();
         ;
         createViewElements();
-    }
-
-    private RestClient buildRestClient() {
-        return RestClient
-                .builder()
-                .baseUrl(backendUrl)
-                .build();
     }
 
     private void createViewElements() {
@@ -99,9 +94,11 @@ public class MainView extends VerticalLayout {
                 .post()
                 .uri("/translate/" + targetLanguage)
                 .contentType(MediaType.TEXT_PLAIN)
+                .accept(MediaType.APPLICATION_NDJSON)
                 .bodyValue(txt)
                 .retrieve()
-                .bodyToFlux(String.class);
+                .bodyToFlux(new ParameterizedTypeReference<Map<String, String>>() {})
+                .map(m -> m.getOrDefault("delta", ""));
     }
 
 
@@ -114,10 +111,11 @@ public class MainView extends VerticalLayout {
         return webClient.post()
                 .uri("/chat")
                 .contentType(MediaType.TEXT_PLAIN)
-                .accept(MediaType.TEXT_EVENT_STREAM)
+                .accept(MediaType.APPLICATION_NDJSON)
                 .bodyValue(txt)
                 .retrieve()
-                .bodyToFlux(String.class);
+                .bodyToFlux(new ParameterizedTypeReference<Map<String, String>>() {})
+                .map(m -> m.getOrDefault("delta", ""));
     }
 
 
