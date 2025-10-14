@@ -35,11 +35,12 @@ public class AiResponseController {
 
     @PostMapping(value="/translate/{targetLanguage}",
             consumes = MediaType.TEXT_PLAIN_VALUE,
-            produces = MediaType.TEXT_EVENT_STREAM_VALUE
+            produces = MediaType.APPLICATION_NDJSON_VALUE
     )
-    public Flux<String> translate(@PathVariable String targetLanguage,
-                                                   @RequestBody String text) {
-        return aiTranslationService.translate(targetLanguage, text);
+    public Flux<Map<String, String>> translate(@PathVariable String targetLanguage,
+                                  @RequestBody String text) {
+        return aiTranslationService.translate(targetLanguage, text)
+                .map(delta -> Map.of("delta", delta));
     }
 
 }

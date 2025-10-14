@@ -26,7 +26,7 @@ public class MainView extends VerticalLayout {
 
     private final WebClient webClient;
 
-    private final TextArea input = new TextArea("Text/Question");
+    private final TextArea input = new TextArea("Question");
     private final TextArea translateInput = new TextArea("Text to translate");
     private final TextArea answer = new TextArea("Answer");
 
@@ -50,7 +50,7 @@ public class MainView extends VerticalLayout {
         setSpacing(true);
 
         input.setWidthFull();
-        input.setPlaceholder("Type a question or a text for translation for Llama");
+        input.setPlaceholder("Type a question for Llama");
 
         translateInput.setWidthFull();
         translateInput.setPlaceholder("Type a text for translation for Llama");
@@ -100,9 +100,11 @@ public class MainView extends VerticalLayout {
                 .post()
                 .uri("/translate/" + targetLanguage)
                 .contentType(MediaType.TEXT_PLAIN)
+                .accept(MediaType.APPLICATION_NDJSON)
                 .bodyValue(txt)
                 .retrieve()
-                .bodyToFlux(String.class);
+                .bodyToFlux(new ParameterizedTypeReference<Map<String, String>>() {})
+                .map(m -> m.getOrDefault("delta", ""));
     }
 
     private Flux<String> onAsk(String message) {
