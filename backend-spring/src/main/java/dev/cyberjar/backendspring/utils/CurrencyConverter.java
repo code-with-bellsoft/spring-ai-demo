@@ -2,8 +2,7 @@ package dev.cyberjar.backendspring.utils;
 
 import org.springframework.ai.tool.annotation.Tool;
 
-import java.math.BigDecimal;
-import java.math.RoundingMode;
+import module java.base;
 
 public class CurrencyConverter {
 
@@ -28,7 +27,6 @@ public class CurrencyConverter {
         double rate = pickRate(from, to);
         double result = a * rate;
 
-        // round to 2 decimals and return BigDecimal
         return BigDecimal.valueOf(result).setScale(2, RoundingMode.HALF_UP);
     }
 

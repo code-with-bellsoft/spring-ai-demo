@@ -10,13 +10,10 @@ import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.TextArea;
 import com.vaadin.flow.router.Route;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.MediaType;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.Disposable;
 import reactor.core.publisher.Flux;
-
-import java.util.Map;
 
 @Route("")
 public class MainView extends VerticalLayout {
@@ -84,8 +81,6 @@ public class MainView extends VerticalLayout {
     }
 
 
-
-
     private Flux<String> onTranslate(String rawText, String languageTo) {
         String txt = trimOrNull(rawText);
         if (txt == null) {
@@ -100,11 +95,10 @@ public class MainView extends VerticalLayout {
                 .post()
                 .uri("/translate/" + targetLanguage)
                 .contentType(MediaType.TEXT_PLAIN)
-                .accept(MediaType.APPLICATION_NDJSON)
+                .accept(MediaType.TEXT_PLAIN)
                 .bodyValue(txt)
                 .retrieve()
-                .bodyToFlux(new ParameterizedTypeReference<Map<String, String>>() {})
-                .map(m -> m.getOrDefault("delta", ""));
+                .bodyToFlux(String.class);
     }
 
     private Flux<String> onAsk(String message) {
@@ -116,11 +110,10 @@ public class MainView extends VerticalLayout {
         return webClient.post()
                 .uri("/chat")
                 .contentType(MediaType.TEXT_PLAIN)
-                .accept(MediaType.APPLICATION_NDJSON)
+                .accept(MediaType.TEXT_PLAIN)
                 .bodyValue(txt)
                 .retrieve()
-                .bodyToFlux(new ParameterizedTypeReference<Map<String, String>>() {})
-                .map(m -> m.getOrDefault("delta", ""));
+                .bodyToFlux(String.class);
     }
 
 

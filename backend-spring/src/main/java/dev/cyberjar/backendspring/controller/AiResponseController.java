@@ -9,8 +9,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 import reactor.core.publisher.Flux;
 
-import java.util.Map;
-
 @RestController
 public class AiResponseController {
 
@@ -26,21 +24,19 @@ public class AiResponseController {
     @PostMapping(
             value = "/chat",
             consumes = MediaType.TEXT_PLAIN_VALUE,
-            produces = MediaType.APPLICATION_NDJSON_VALUE
+            produces = MediaType.TEXT_PLAIN_VALUE
     )
-    public Flux<Map<String, String>> chat(@RequestBody String request) {
-        return aiChatService.reply(request)
-                .map(delta -> Map.of("delta", delta)); //one JSON per line
+    public Flux<String> chat(@RequestBody String request) {
+        return aiChatService.reply(request);
     }
 
     @PostMapping(value="/translate/{targetLanguage}",
             consumes = MediaType.TEXT_PLAIN_VALUE,
-            produces = MediaType.APPLICATION_NDJSON_VALUE
+            produces = MediaType.TEXT_PLAIN_VALUE
     )
-    public Flux<Map<String, String>> translate(@PathVariable String targetLanguage,
+    public Flux<String> translate(@PathVariable String targetLanguage,
                                   @RequestBody String text) {
-        return aiTranslationService.translate(targetLanguage, text)
-                .map(delta -> Map.of("delta", delta));
+        return aiTranslationService.translate(targetLanguage, text);
     }
 
 }
